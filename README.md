@@ -1,8 +1,8 @@
-Inhibits idle on Wayland when a video device is open (i.e. you're in a meeting at work).
+Inhibits idle on [Wayland](https://en.wikipedia.org/wiki/Wayland_(display_server_protocol)) when a video device is open (i.e. you're in a meeting at work).
 
 ## Installation
 
-Archlinux users can install `aur/sway-video-idle-inhibit`
+Archlinux users can install [`aur/sway-video-idle-inhibit`](https://aur.archlinux.org/packages/sway-video-idle-inhibit)
 
 ## Usage
 

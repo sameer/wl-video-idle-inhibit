@@ -1,9 +1,6 @@
-use std::thread;
-use std::time::Duration;
+use std::ffi::OsStr;
 
-use mpris::PlaybackStatus;
-use mpris::PlayerFinder;
-use mpris::{Event as MprisEvent, FindingError, Player};
+use inotify::{EventMask, Inotify, WatchMask};
 use wayland_client::{
     protocol::{
         __interfaces::WL_COMPOSITOR_INTERFACE,
@@ -18,14 +15,15 @@ use wayland_protocols::unstable::idle_inhibit::v1::client::{
     zwp_idle_inhibit_manager_v1::{self, ZwpIdleInhibitManagerV1},
     zwp_idle_inhibitor_v1::{self, ZwpIdleInhibitorV1},
 };
-
-/// The typical idle timeout is minutes in length.
-/// With that in mind, keeping the sleep duration long here
-/// will reduce CPU usage while still achieving the desired effect.
-const PLAYER_POLL_SLEEP_DURATION: Duration = Duration::from_secs(5);
+const DEV_PATH: &str = "/dev";
+const VIDEO_PREFIX: &str = "video";
 
 fn main() {
-    let player_finder = PlayerFinder::new().expect("could not connect to DBus");
+    let watch_mask = WatchMask::OPEN | WatchMask::CLOSE;
+    let mut inotify = Inotify::init().expect("failed to initialize inotify");
+    inotify
+        .add_watch(DEV_PATH, watch_mask)
+        .expect("couldn't watch for video device events");
 
     let conn = Connection::connect_to_env().expect("could not connect to Wayland server");
     let mut event_queue = conn.new_event_queue();
@@ -37,82 +35,56 @@ fn main() {
     let mut state = State::default();
     event_queue.blocking_dispatch(&mut state).unwrap();
     let mut idle_inhibitor = None;
+
+    let mut num_active_players = 0usize;
+    let mut buf = [0; 1024];
     loop {
-        let active_player_opt =
-            find_active_player(&player_finder).expect("error while finding active players");
+        for event in inotify
+            .read_events_blocking(&mut buf)
+            .expect("error while reading video device events")
+        {
+            let name = if let Some(name) = event
+                .name
+                .and_then(OsStr::to_str)
+                .filter(|name| name.starts_with(VIDEO_PREFIX))
+            {
+                name
+            } else {
+                continue;
+            };
 
-        if let Some(active_player) = active_player_opt {
-            idle_inhibitor = idle_inhibitor.or_else(|| {
-                Some(
-                    state
-                        .idle_inhibit_manager
-                        .as_ref()
-                        .expect("idle manager should be present")
-                        .create_inhibitor(
-                            &mut conn.handle(),
-                            state
-                                .surf
-                                .as_ref()
-                                .expect("wayland surface should be present"),
-                            &qh,
-                            (),
-                        )
-                        .expect("could not inhibit idle"),
-                )
-            });
-            println!("Idle inhibited by {}", active_player.identity());
-            // Blocks until new events are received.
-            // Guaranteed to (eventually) receive a shutdown event which will break this loop.
-            loop {
-                let events = active_player
-                    .events()
-                    .expect("couldn't watch for player events");
-
-                let mut event_iterator = events.map(|event| {
-                    event.map(|event| {
-                        println!("Received event {:?}", event);
-                        matches!(
-                            event,
-                            MprisEvent::PlayerShutDown | MprisEvent::Stopped | MprisEvent::Paused
-                        )
-                    })
+            if EventMask::OPEN.contains(event.mask) {
+                idle_inhibitor = idle_inhibitor.or_else(|| {
+                    Some(
+                        state
+                            .idle_inhibit_manager
+                            .as_ref()
+                            .expect("idle manager should be present")
+                            .create_inhibitor(
+                                &mut conn.handle(),
+                                state
+                                    .surf
+                                    .as_ref()
+                                    .expect("wayland surface should be present"),
+                                &qh,
+                                (),
+                            )
+                            .expect("could not inhibit idle"),
+                    )
                 });
-
-                let should_allow_idle = event_iterator
-                    .find(|res| matches!(res, Ok(true) | Err(_)))
-                    .unwrap_or_else(|| {
-                        println!("No event ending playback returned, allowing idle");
-                        Ok(true)
-                    })
-                    .unwrap_or_else(|err| {
-                        println!("Error while watching player events, allowing idle: {}", err);
-                        true
-                    });
-
-                if !should_allow_idle {
-                    break;
+                num_active_players += 1;
+                println!("Idle inhibited by {}", name);
+            } else if (EventMask::CLOSE_WRITE | EventMask::CLOSE_NOWRITE).contains(event.mask) {
+                println!("Idle permitted by {}", name);
+                num_active_players = num_active_players.saturating_sub(1);
+                if let (0, Some(i)) = (num_active_players, idle_inhibitor.as_ref()) {
+                    i.destroy(&mut conn.handle());
+                    idle_inhibitor = None;
+                    println!("Idle lock released");
                 }
             }
-        } else if let Some(i) = idle_inhibitor.as_ref() {
-            i.destroy(&mut conn.handle());
-            idle_inhibitor = None;
-            println!("Idle allowed");
         }
-        thread::sleep(PLAYER_POLL_SLEEP_DURATION)
     }
-}
-
-fn find_active_player(player_finder: &PlayerFinder) -> Result<Option<Player>, FindingError> {
-    player_finder.find_all().map(|mut players| {
-        players.drain(..).find(|p| match p.get_playback_status() {
-            Ok(PlaybackStatus::Playing) => true,
-            Ok(_) => false,
-            Err(e) => {
-                println!("Could not get playback status for {} {}", p.identity(), e);
-                false
-            }
-        })
-    })
 }
 
 #[derive(Default)]
@@ -144,7 +116,6 @@ impl Dispatch<WlRegistry> for State {
                     .bind::<ZwpIdleInhibitManagerV1, _>(conn, name, version, qh, ())
                     .unwrap();
                 self.idle_inhibit_manager = Some(idle_inhibit_manager);
-                eprintln!("[{}] {} (v{})", name, interface, version);
             } else if interface == WL_COMPOSITOR_INTERFACE.name {
                 let compositor = registry
                     .bind::<WlCompositor, _>(conn, name, version, qh, ())
@@ -152,7 +123,6 @@ impl Dispatch<WlRegistry> for State {
                 let surf = compositor.create_surface(conn, qh, ()).unwrap();
                 self.surf = Some(surf);
                 self.compositor = Some(compositor);
-                eprintln!("[{}] {} (v{})", name, interface, version);
             }
         }
     }

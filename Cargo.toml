@@ -1,11 +1,12 @@
 [package]
-name = "sway-mpris-idle-inhibit"
+name = "sway-video-idle-inhibit"
 version = "0.1.1"
 edition = "2021"
+description = "Inhibits idle on Wayland when a video device is open"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 wayland-protocols = { version = "0.30.0-alpha2", git = "https://github.com/Smithay/wayland-rs.git", features = ["client", "unstable_protocols"] }
 wayland-client = { version = "0.30.0-alpha2", git = "https://github.com/Smithay/wayland-rs.git" }
-mpris = { version = "2.0.0-rc2", git = "https://github.com/Mange/mpris-rs.git" }
+inotify = "0.10"

@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "autocfg"
-version = "1.0.1"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
+checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "bitflags"
@@ -16,9 +16,9 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
 name = "cc"
-version = "1.0.72"
+version = "1.0.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22a9137b95ea06864e018375b72adfb7db6e6f68cfc8df5a04d00288050485ee"
+checksum = "2fff2a6927b3bb87f9595d67196a70493f627687a71d87a0d692242c33f58c11"
 
 [[package]]
 name = "cfg-if"
@@ -43,18 +43,18 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 
 [[package]]
 name = "futures-channel"
-version = "0.3.19"
+version = "0.3.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba3dda0b6588335f360afc675d0564c17a77a2bda81ca178a4b6081bd86c7f0b"
+checksum = "c3083ce4b914124575708913bca19bfe887522d6e2e6d0952943f5eac4a74010"
 dependencies = [
  "futures-core",
 ]
 
 [[package]]
 name = "futures-core"
-version = "0.3.19"
+version = "0.3.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d0c8ff0461b82559810cdccfde3215c3f373807f5e5232b71479bff7bb2583d7"
+checksum = "0c09fd04b7e4073ac7156a9539b57a484a8ea920f79c7c675d05d289ab6110d3"
 
 [[package]]
 name = "inotify"
@@ -80,9 +80,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.112"
+version = "0.2.121"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b03d17f364a3a042d5e5d46b053bbbf82c92c9430c592dd4c064dc6ee997125"
+checksum = "efaa7b300f3b5fe8eb6bf21ce3895e1751d9665086af2d64b42f19701015ff4f"
 
 [[package]]
 name = "libloading"
@@ -114,14 +114,15 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "0.7.14"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8067b404fe97c70829f082dec8bcf4f71225d7eaea1d8645349cb76fa06205cc"
+checksum = "52da4364ffb0e4fe33a9841a98a3f3014fb964045ce4f7a45a398243c8d6b0c9"
 dependencies = [
  "libc",
  "log",
  "miow",
  "ntapi",
+ "wasi",
  "winapi",
 ]
 
@@ -149,9 +150,9 @@ dependencies = [
 
 [[package]]
 name = "ntapi"
-version = "0.3.6"
+version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f6bb902e437b6d86e03cce10a7e2af662292c5dfef23b65899ea3ac9354ad44"
+checksum = "c28774a7fd2fbb4f0babd8237ce554b73af68021b5f695a3cebd6c59bac0980f"
 dependencies = [
  "winapi",
 ]
@@ -179,9 +180,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.14"
+version = "1.0.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47aa80447ce4daf1717500037052af176af5d38cc3e571d9ec1c7353fc10c87d"
+checksum = "b4af2ec4714533fcdf07e886f17025ace8b997b9ce51204ee69b6da831c3da57"
 dependencies = [
  "proc-macro2",
 ]
@@ -199,8 +200,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
 
 [[package]]
+name = "socket2"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66d72b759436ae32898a2af0a14218dbf55efde3feeb170eb623637db85ee1e0"
+dependencies = [
+ "libc",
+ "winapi",
+]
+
+[[package]]
 name = "sway-video-idle-inhibit"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "inotify",
  "wayland-client",
@@ -209,9 +220,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.85"
+version = "1.0.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a684ac3dcd8913827e18cd09a68384ee66c1de24157e3c556c9ab16d85695fb7"
+checksum = "ea297be220d52398dcc07ce15a209fce436d361735ac1db700cab3b6cdfb9f54"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -240,13 +251,14 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.16.1"
+version = "1.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c27a64b625de6d309e8c57716ba93021dccf1b3b5c97edd6d3dd2d2135afc0a"
+checksum = "2af73ac49756f3f7c01172e34a23e5d0216f6c32333757c2c61feb2bbff5a5ee"
 dependencies = [
  "libc",
  "mio",
  "pin-project-lite",
+ "socket2",
  "winapi",
 ]
 
@@ -257,9 +269,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
 
 [[package]]
+name = "wasi"
+version = "0.11.0+wasi-snapshot-preview1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
+
+[[package]]
 name = "wayland-backend"
-version = "0.1.0-alpha2"
-source = "git+https://github.com/Smithay/wayland-rs.git#ea22f4c12aaf5b0055cf6d2767fc5c85fd99fb6a"
+version = "0.1.0-alpha6"
+source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
 dependencies = [
  "cc",
  "downcast-rs",
@@ -272,8 +290,8 @@ dependencies = [
 
 [[package]]
 name = "wayland-client"
-version = "0.30.0-alpha2"
-source = "git+https://github.com/Smithay/wayland-rs.git#ea22f4c12aaf5b0055cf6d2767fc5c85fd99fb6a"
+version = "0.30.0-alpha6"
+source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
 dependencies = [
  "bitflags",
  "futures-channel",
@@ -286,8 +304,8 @@ dependencies = [
 
 [[package]]
 name = "wayland-protocols"
-version = "0.30.0-alpha2"
-source = "git+https://github.com/Smithay/wayland-rs.git#ea22f4c12aaf5b0055cf6d2767fc5c85fd99fb6a"
+version = "0.30.0-alpha6"
+source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
 dependencies = [
  "bitflags",
  "wayland-backend",
@@ -297,8 +315,8 @@ dependencies = [
 
 [[package]]
 name = "wayland-scanner"
-version = "0.30.0-alpha2"
-source = "git+https://github.com/Smithay/wayland-rs.git#ea22f4c12aaf5b0055cf6d2767fc5c85fd99fb6a"
+version = "0.30.0-alpha6"
+source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -308,8 +326,8 @@ dependencies = [
 
 [[package]]
 name = "wayland-sys"
-version = "0.30.0-alpha2"
-source = "git+https://github.com/Smithay/wayland-rs.git#ea22f4c12aaf5b0055cf6d2767fc5c85fd99fb6a"
+version = "0.30.0-alpha6"
+source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
 dependencies = [
  "dlib",
  "log",

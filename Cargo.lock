@@ -137,12 +137,11 @@ dependencies = [
 
 [[package]]
 name = "nix"
-version = "0.23.1"
+version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f866317acbd3a240710c63f065ffb1e4fd466259045ccb504130b7f668f35c6"
+checksum = "8f17df307904acd05aa8e32e97bb20f2a0df1728bbc2d771ae8f9a90463441e9"
 dependencies = [
  "bitflags",
- "cc",
  "cfg-if",
  "libc",
  "memoffset",
@@ -276,8 +275,8 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 
 [[package]]
 name = "wayland-backend"
-version = "0.1.0-alpha6"
-source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
+version = "0.1.0-beta.5"
+source = "git+https://github.com/Smithay/wayland-rs.git#70b0389becc49edde19ec16779eec3c5b0ad0a5f"
 dependencies = [
  "cc",
  "downcast-rs",
@@ -290,11 +289,12 @@ dependencies = [
 
 [[package]]
 name = "wayland-client"
-version = "0.30.0-alpha6"
-source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
+version = "0.30.0-beta.5"
+source = "git+https://github.com/Smithay/wayland-rs.git#70b0389becc49edde19ec16779eec3c5b0ad0a5f"
 dependencies = [
  "bitflags",
  "futures-channel",
+ "futures-core",
  "log",
  "nix",
  "thiserror",
@@ -304,8 +304,8 @@ dependencies = [
 
 [[package]]
 name = "wayland-protocols"
-version = "0.30.0-alpha6"
-source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
+version = "0.30.0-beta.5"
+source = "git+https://github.com/Smithay/wayland-rs.git#70b0389becc49edde19ec16779eec3c5b0ad0a5f"
 dependencies = [
  "bitflags",
  "wayland-backend",
@@ -315,8 +315,8 @@ dependencies = [
 
 [[package]]
 name = "wayland-scanner"
-version = "0.30.0-alpha6"
-source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
+version = "0.30.0-beta.5"
+source = "git+https://github.com/Smithay/wayland-rs.git#70b0389becc49edde19ec16779eec3c5b0ad0a5f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -326,8 +326,8 @@ dependencies = [
 
 [[package]]
 name = "wayland-sys"
-version = "0.30.0-alpha6"
-source = "git+https://github.com/Smithay/wayland-rs.git#83f2d168a844f7cc262e6b4099d70463970698bc"
+version = "0.30.0-beta.5"
+source = "git+https://github.com/Smithay/wayland-rs.git#70b0389becc49edde19ec16779eec3c5b0ad0a5f"
 dependencies = [
  "dlib",
  "log",

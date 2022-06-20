@@ -7,6 +7,6 @@ description = "Inhibits idle on Wayland when a video device is open"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wayland-protocols = { version = "0.30.0-alpha6", git = "https://github.com/Smithay/wayland-rs.git", features = ["client", "unstable_protocols"] }
-wayland-client = { version = "0.30.0-alpha6", git = "https://github.com/Smithay/wayland-rs.git" }
+wayland-protocols = { version = "0.30.0-beta.5", git = "https://github.com/Smithay/wayland-rs.git", features = ["client", "unstable"] }
+wayland-client = { version = "0.30.0-beta.5", git = "https://github.com/Smithay/wayland-rs.git" }
 inotify = "0.10"

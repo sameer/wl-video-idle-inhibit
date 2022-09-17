@@ -1,6 +1,6 @@
 [package]
 name = "sway-video-idle-inhibit"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 description = "Inhibits idle on Wayland when a video device is open"
 license = "MIT OR Apache-2.0"
@@ -8,6 +8,6 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wayland-protocols = { version = "0.30.0-beta.5", git = "https://github.com/Smithay/wayland-rs.git", features = ["client", "unstable"] }
-wayland-client = { version = "0.30.0-beta.5", git = "https://github.com/Smithay/wayland-rs.git" }
+wayland-protocols = { version = "0.30.0-beta.10", git = "https://github.com/Smithay/wayland-rs.git", features = ["client", "unstable"] }
+wayland-client = { version = "0.30.0-beta.10", git = "https://github.com/Smithay/wayland-rs.git" }
 inotify = "0.10"

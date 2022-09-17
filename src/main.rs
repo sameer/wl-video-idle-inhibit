@@ -31,7 +31,7 @@ fn main() {
     let qh = event_queue.handle();
     let display = conn.display();
 
-    let _registry = display.get_registry(&qh, ()).unwrap();
+    let _registry = display.get_registry(&qh, ());
 
     let mut state = State::default();
     event_queue.blocking_dispatch(&mut state).unwrap();
@@ -67,8 +67,7 @@ fn main() {
                                 .expect("wayland surface should be present"),
                             &qh,
                             (),
-                        )
-                        .expect("could not inhibit idle");
+                        );
                     conn.roundtrip()
                         .expect("failed to request creating idle inhibitor");
                     Some(inhibitor)
@@ -99,7 +98,7 @@ struct State {
 
 impl Dispatch<WlRegistry, ()> for State {
     fn event(
-        &mut self,
+        state: &mut State,
         registry: &WlRegistry,
         event: wl_registry::Event,
         _: &(),
@@ -112,11 +111,9 @@ impl Dispatch<WlRegistry, ()> for State {
                 interface,
                 version,
             } if interface == WL_COMPOSITOR_INTERFACE.name => {
-                let compositor = registry
-                    .bind::<WlCompositor, _, _>(name, version, qh, ())
-                    .unwrap();
-                self.surf = Some(compositor.create_surface(qh, ()).unwrap());
-                self.compositor = Some(compositor);
+                let compositor = registry.bind::<WlCompositor, _, _>(name, version, qh, ());
+                state.surf = Some(compositor.create_surface(qh, ()));
+                state.compositor = Some(compositor);
                 eprintln!("[{}] {} (v{})", name, interface, version);
             }
             wl_registry::Event::Global {
@@ -124,10 +121,9 @@ impl Dispatch<WlRegistry, ()> for State {
                 interface,
                 version,
             } if interface == ZWP_IDLE_INHIBIT_MANAGER_V1_INTERFACE.name => {
-                let idle_inhibit_manager = registry
-                    .bind::<ZwpIdleInhibitManagerV1, _, _>(name, version, qh, ())
-                    .unwrap();
-                self.idle_inhibit_manager = Some(idle_inhibit_manager);
+                let idle_inhibit_manager =
+                    registry.bind::<ZwpIdleInhibitManagerV1, _, _>(name, version, qh, ());
+                state.idle_inhibit_manager = Some(idle_inhibit_manager);
                 eprintln!("[{}] {} (v{})", name, interface, version);
             }
             // Don't care
@@ -138,7 +134,7 @@ impl Dispatch<WlRegistry, ()> for State {
 
 impl Dispatch<WlCompositor, ()> for State {
     fn event(
-        &mut self,
+        _: &mut State,
         _: &WlCompositor,
         _: wl_compositor::Event,
         _: &(),
@@ -150,7 +146,7 @@ impl Dispatch<WlCompositor, ()> for State {
 
 impl Dispatch<WlSurface, ()> for State {
     fn event(
-        &mut self,
+        _: &mut State,
         _: &WlSurface,
         _: wl_surface::Event,
         _: &(),
@@ -162,7 +158,7 @@ impl Dispatch<WlSurface, ()> for State {
 
 impl Dispatch<ZwpIdleInhibitManagerV1, ()> for State {
     fn event(
-        &mut self,
+        _: &mut State,
         _: &ZwpIdleInhibitManagerV1,
         _: zwp_idle_inhibit_manager_v1::Event,
         _: &(),
@@ -174,7 +170,7 @@ impl Dispatch<ZwpIdleInhibitManagerV1, ()> for State {
 
 impl Dispatch<ZwpIdleInhibitorV1, ()> for State {
     fn event(
-        &mut self,
+        _: &mut State,
         _: &ZwpIdleInhibitorV1,
         _: zwp_idle_inhibitor_v1::Event,
         _: &(),

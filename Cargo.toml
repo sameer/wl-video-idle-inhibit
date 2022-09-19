@@ -1,5 +1,5 @@
 [package]
-name = "sway-video-idle-inhibit"
+name = "wl-video-idle-inhibit"
 version = "0.1.4"
 edition = "2021"
 description = "Inhibits idle on Wayland when a video device is open"

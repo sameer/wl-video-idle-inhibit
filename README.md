@@ -10,5 +10,5 @@ In Sway config (~/.config/sway/config):
 
 ```
 # Inhibit idle when a video device is open
-exec sway-video-idle-inhibit
+exec wl-video-idle-inhibit
 ```
